@@ -1,0 +1,7 @@
+<% import CocktailWeb.LayoutView, only: [build_classes_main: 2, build_styles: 1] %>
+
+<div id="<%= @id %>" class="<%= build_classes_main(@classes, false) %>" style="<%= build_styles(@style) %>">
+    <%= for contents <- @body do 
+    render(CocktailWeb.CocktailPublicView, "element.html", contents: contents, conn: CocktailWeb.CocktailPublicView, additional: @additional)
+    end %>
+</div>

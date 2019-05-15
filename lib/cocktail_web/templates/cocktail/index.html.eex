@@ -1,0 +1,32 @@
+<section class="phx-hero">
+    <h1>Cocktail Editor</h1>
+    <a class="btn" href="<%= Routes.cocktail_public_path(@conn, :index) %>">Published Index</a>
+</section>
+<section class="row">
+    <a class="button" href="<%= Routes.cocktail_path(@conn, :edit, Cocktail.Page.page_id(:page)) %>">Create a new page</a>
+</section>
+<br>
+<br>
+<section class="row group-border">
+    <%= if(@pages == []) do %>
+    <p>No saved pages...</p>
+    <% end %>
+    <%= for [id, title] <- @pages do %>
+    <a style="flex: 1;" href="<%= Routes.cocktail_path(@conn, :edit, id) %>"><%= title %></a>
+    <% end %>
+</section>
+<br>
+<br>
+<section class="row">
+    <a class="button" href="<%= Routes.cocktail_path(@conn, :edit_component, Cocktail.Page.page_id(:component)) %>">Create a new component</a>
+</section>
+<br>
+<br>
+<section class="row group-border">
+    <%= if(@components == []) do %>
+    <p>No saved pages...</p>
+    <% end %>
+    <%= for [id, title] <- @components do %>
+    <a style="flex: 1;" href="<%= Routes.cocktail_path(@conn, :edit_component, id) %>"><%= title %></a>
+    <% end %>
+</section>

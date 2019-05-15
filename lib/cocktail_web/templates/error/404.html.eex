@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Cocktail Error</title>
+    </head>
+    <body class="cocktail-public-view">
+        <main role="main">
+            <section class="phx-hero">
+                <h1>Cocktail Editor</h1>
+                <p>That page doesn't seem to exist</p>
+                <br>
+                <br>
+                <a class="btn" href="<%= Routes.cocktail_path(@conn, :index) %>">Editor</a>
+                <br>
+                <a class="btn" href="<%= Routes.cocktail_public_path(@conn, :index) %>">Public Pages</a>
+            </section>
+        </main>
+        <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+    </body>
+</html>

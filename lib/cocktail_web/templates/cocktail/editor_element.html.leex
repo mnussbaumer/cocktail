@@ -1,0 +1,4 @@
+<% import CocktailWeb.LayoutView, only: [cocktail_tag: 5] %>
+
+<%= Phoenix.HTML.raw(cocktail_tag(@contents, @socket, @chain, @page_id, @selected)) %>
+

@@ -1,0 +1,16 @@
+<section class="phx-hero">
+    <h1>Cocktail Editor</h1>
+    <a class="btn" href="<%= Routes.cocktail_path(@conn, :index) %>">Editor</a>
+</section>
+<%= if(@pages == []) do %>
+<p>No published pages...</p>
+<%= else %>
+<p>Published Pages</p>
+<% end %>
+<%= for %{id: id, title: title, published_at: %{day: day, month: month, year: year}} <- @pages do %>
+<section class="row group-border">
+    <a style="flex: 1; display: flex;" href="<%= Routes.cocktail_public_path(@conn, :show, id) %>"><%= title %> - Published At: <%= day %>, <%= CocktailWeb.LayoutView.month_to_human(month) %> <%= year %></a>
+</section>
+<% end %>
+<br>
+<br>

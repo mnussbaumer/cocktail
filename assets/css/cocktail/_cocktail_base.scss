@@ -1,0 +1,198 @@
+$sizes: (
+    "small": 12,
+    "normal": 18,
+    "large": 24,
+    "extra-large": 36
+);
+
+$sizes-map: ();
+@each $size, $sizepx in $sizes {
+    $sizes-map: map-merge($sizes-map, ($size: (
+    "font-size": #{$sizepx}px,
+    "line-height": #{$sizepx}px,
+    "btn-height": #{$sizepx * 1.6}px,
+)
+)
+)
+}
+
+$sides: ("left": "l", "top": "t", "right": "r", "bottom": "b");
+
+$color-map: (
+    "white": white,
+    "black": black,
+    "gray": rgb(127,127,127),
+    "primary": #1A88FF,
+    "secondary": #FFA71A,
+    "tertiary": #4B1AFF,
+    "warning": #E07000,
+    "error": #E02A00,
+    "info": #00A6E0,
+    "success": #05A83B,
+    "mute": #939393,
+    "clear": transparent,
+);
+
+
+@debug $sizes-map;
+
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    margin: 5px;
+    background-color: map-get($color-map, "primary");
+    border: darken(map-get($color-map, "primary"), 10%);
+    max-width: 100%;
+    &:hover {
+        background-color: darken(map-get($color-map, "primary"), 25%);
+        border: darken(map-get($color-map, "primary"), 30%);
+    }
+}
+
+@each $name, $color in $color-map {
+    .button-#{$name} {
+        background-color: $color;
+        border: darken($color, 10%);
+        &:hover {
+            background-color: darken($color, 25%);
+            border: darken($color, 30%);
+        }
+    }
+    .color-#{$name} {
+        color: $color;
+    }
+    .bg-color-#{$name} {
+        background-color: $color;
+    }
+}
+
+
+@each $size, $size-map in $sizes-map {
+    .button-#{$size} {
+        font-size: map-get($size-map, "font-size");
+        line-height: map-get($size-map, "line-height");
+        height: map-get($size-map, "btn-height");
+    }
+}
+
+
+@for $i from 0 through 10 {
+
+    @for $i2 from 0 through 9 {
+        .flex-#{$i}-#{$i2}, .children-flex-#{$i}-#{$i2} > * {
+            flex: #{$i + ($i2 * 0.1)};
+        }
+        .flex-#{$i}#{$i2}, .children-flex-#{$i}#{$i2} > * {
+            min-width: unquote("#{$i}#{$i2}%");
+            width: unquote("#{$i}#{$i2}%");
+            max-width: unquote("#{$i}#{$i2}%");
+            flex: 1;
+        }
+    }
+
+
+    $val: $i;
+    
+    @each $cond in (false, true) {
+        @if $cond {
+            $val: $i / 10;
+            $i: "0#{$i}";
+        }
+        
+        @each $side, $short in $sides {
+            .m#{$short}-#{$i}, .children-m#{$short}-#{$i} > * {
+                margin-#{$side}: #{$val * 10}px;
+            }
+            .p#{$short}-#{$i}, .children-p#{$short}-#{$i} > * {
+                padding-#{$side}: #{$val * 10}px;
+            }
+        }
+        
+        .mx-#{$i}, .children-mx-#{$i} > * {
+            margin-left: #{$val * 10}px;
+            margin-right: #{$val * 10}px;
+        }
+        
+        .my-#{$i}, .children-my-#{$i} > * {
+            margin-top: #{$val * 10}px;
+            margin-bottom: #{$val * 10}px;
+        }
+        
+        .m-#{$i}, .children-m-#{$i} > * {
+            margin: #{$val * 10}px;
+        }
+        
+        .px-#{$i}, .children-px-#{$i} > * {
+            padding-left: #{$val * 10}px;
+            padding-right: #{$val * 10}px;
+        }
+        
+        .py-#{$i}, .children-py-#{$i} > * {
+            padding-top: #{$val * 10}px;
+            padding-bottom: #{$val * 10}px;
+        }
+        
+        .p-#{$i}, .children-p-#{$i} > * {
+            padding: #{$val * 10}px;
+        }
+        @debug $i;
+
+    }
+    
+}
+
+.flex-row, .children-flex-row > * {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+}
+
+.flex-column, .children-flex-column > * {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+}
+
+
+.justify-content-around, .children-justify-content-around > * {
+    justify-content: space-around;
+}
+
+.justify-content-between, .children-justify-content-between > * {
+    justify-content: space-between;
+}
+
+.justify-content-center, .children-justify-content-center > * {
+    justify-content: center;
+}
+
+.justify-content-start, .children-justify-content-start > * {
+    justify-content: flex-start;
+}
+
+.justify-content-end, .children-justify-content-end > * {
+    justify-content: flex-end;
+}
+
+.align-items-center, .children-align-items-center > * {
+    align-items: center;
+}
+
+.align-items-around, .children-align-items-around > * {
+    align-items: space-around;
+}
+
+.align-items-between, .children-align-items-between > * {
+    align-items: space-between;
+}
+
+.align-items-start, .children-align-items-start > * {
+    align-items: flex-start;
+}
+
+.align-items-end, .children-align-items-end > * {
+    align-items: flex-end;
+}

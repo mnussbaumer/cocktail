@@ -1,0 +1,211 @@
+<% import CocktailWeb.LayoutView, only: [tags_most_common: 0, tags_remaining: 0] %>
+<div class="cocktail-notification-container">
+    <%= for {_, {type, notif}} <- @notifications do %>
+        <p class="alert alert-<%=  type %>" role="alert"><%= notif %></p>
+    <% end %>
+</div>
+<div class="editor-panel-container">
+    <div class="editor-panel">
+        <div class="flex-row">
+            <div class="flex-60">
+                <div class="flex-row">
+                    <div class="select-group">
+                        <select id="add_element_select">
+                            <%= tags_most_common() %>
+                            <%= tags_remaining() %>
+                        </select>
+                        <button class="button button-small" phx-click="add_element">Add</button>
+                    </div>
+                    <div class="flex-1-0">
+                        <div class="flex-row">
+                            <button class="button button-small button-warning" phx-click="delete_element" <%= if(length(@selected.full_chain) < 2, do: "disabled", else: "") %>>Delete</button>
+                            <button class="button button-small" phx-click="toggle_page_options">Settings</button>
+                            <button class="button button-small" phx-click="toggle_global_options">Global</button>
+                            <button class="button button-small" phx-click="toggle_components">Import Component</button>
+                            <button class="button button-small" phx-click="toggle_edit">Edit</button>
+                        </div>
+                        <div class="flex-row" >
+                            <button class="button button-small" phx-click="select_parent" <%= if(length(@selected.full_chain) < 2, do: "disabled", else: "") %>>Select Parent</button>
+                            <button class="button button-small" phx-click="select_prev_sib"
+                                    <%= if(!@selected.previous_sib, do: "disabled") %>
+                            >Select < Sibling</button>
+                            <button class="button button-small" phx-click="select_next_sib"
+                                    <%= if(!@selected.next_sib, do: "disabled") %>
+                            >Select > Sibling</button>
+                        </div>
+                        <div class="flex-row">
+                            <button class="button button-small" phx-click="select_child">Select Child</button>
+                            <button class="button button-small" phx-click="move_prev"
+                                    <%= if(!@selected.previous_sib, do: "disabled") %>
+                            >< Move</button>
+                            <button class="button button-small" phx-click="move_next"
+                                    <%= if(!@selected.next_sib, do: "disabled") %>
+                            >Move ></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-40">
+                <div class="flex-row justify-content-end">
+                    <%= if !@protected do %>
+                        <button class="button button-small" phx-click="save">Save</button>
+                    <% end %>
+                    <a class="button button-small" href="/cocktail-editor">Index</a>
+                </div>
+                <div class="flex-row justify-content-end">
+                    
+                    <a class="button button-small" target="_blank"
+                       <%=  if @created_at, do: "href=preview/#{@page_id}" %> <%= if(!@created_at, do: "disabled") %>>Preview</a>
+                    <%= if !@protected do %>
+                        <button class="button button-small" phx-value="<%= @type %>" phx-click="publish" >Publish</button>
+                        <button class="button button-small button-warning" phx-click="delete" <%= if(!@created_at, do: "disabled") %>>Delete</button>
+                    <% end %>
+                </div>
+                <div class="flex-row justify-content-end">
+                    <%= if @protected do %>
+                        <p class="color-warning mb-0">This is a protected element, saving and delete disabled</p>
+                    <%= else %>
+                        <%= case @saved do %>
+                            <% true -> %> <p class="color-info mb-0">Current version saved</p>
+                                <% false -> %> <p class="color-warning mb-0">Changes not saved yet</p>
+                                <% end %>
+                            <% end %>
+                </div>
+            </div>
+        </div>
+        <div id="cocktail-element-menu" class="cocktail-edit-menu <%= if(@show_edit_menu, do: "show") %>">
+            <%= if :erlang.is_map_key(:content, @selected) do %>
+                <div class="group-border">
+                    <p>Content:</p>
+                    <div>
+                        <textarea id="content-content" placeholder="Content for this section"><%= @selected.content %></textarea>
+                    </div>
+                    <div class="flex-row justify-content-between">
+                        <p>Content Type</p>
+                        <input type="radio" id="content-type-html" name="content-type" value="html" checked>
+                        <label for="content-type-html">Html</label>
+                        <input type="radio" id="content-type-text" name="content-type" value="text">
+                        <label for="content-type-texr">Text</label>
+                        <input type="radio" id="content-type-markdown" name="content-type" value="markdown" disabled>
+                        <label for="content-type-markdown">Markdown</label>
+                    </div>
+                    <button class="button button-small" phx-click="update_content">Update</button>
+                </div>
+            <% end %>
+            <div class="group-border p-05">
+                <div class="flex-row children-mx-05">
+                    <div class="flex-1-0">
+                        <input type="text" id="style-prop" placeholder="style, eg: font-size">
+                    </div>
+                    <div class="flex-1-0">
+                        <input type="text" id="style-prop-value" placeholder="value, eg: 14px">
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <div class="flex-50">
+                        <button class="button button-small" phx-click="add_style">Add to selected</button>
+                    </div>
+                    <div class="flex-50">
+                        <button class="button button-small" phx-click="add_style_children" >Add to Children</button>
+                    </div>
+                </div>
+                <br>
+                <p>Styles:</p>
+                <div id="cocktail-edit-menu-styles">
+                    <%= for {style, value} <- @selected.style do %>
+                        <div class="flex-row cocktail-edit-menu-prop-line children-mx-01 children-align-items-center">
+                            <div class="flex-24">
+                                <p><%= style %></p>
+                            </div>
+                            <div class="flex-24">
+                                <input type="text" id="style-<%= style %>" value="<%= value %>">
+                            </div>
+                            <div class="flex-24">
+                                <button class="button button-small" phx-click="update_style" cocktail-ref="style-<%= style %>">Update</button>
+                            </div>
+                            <div class="flex-24">
+                                <button class="button button-small" phx-click="delete_style" phx-value='["<%= style %>", "<%=  value %>"]'>Delete</button>
+                            </div>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="group-border">
+                <div id="cocktail-edit-menu-classes">
+                    <div class="flex-row children-align-items-center">
+                        <input type="text" id="class-prop" placeholder="class(es), eg: class-1 class-2">
+                    </div>
+                    <div class="flex-row children-align-items-center">
+                        <div class="flex-50">
+                            <button class="button button-small" phx-click="add_class">Add</button>
+                        </div>
+                        <div class="flex-50">
+                            <button class="button button-small" phx-click="add_class_children">Add to Children</button>
+                        </div>
+                    </div>
+                    <br>
+                    <p>Classes:</p>
+                    <%= for class <- @selected.classes do %>
+                        <div class="row cocktail-edit-menu-prop-line">
+                            <div class="column">
+                                <p><%= class %></p>
+                            </div>
+                            <div class="column">
+                                <button class="button button-small" phx-click="delete_class" phx-value="<%= class %>">Delete</button>
+                            </div>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+            <br>
+            <br>
+            <button class="button button-small" phx-click="toggle_edit">Close</button>
+        </div>
+        <div id="cocktail-page-menu" class="cocktail-edit-menu <%= if(@show_page_options, do: "show") %>">
+            <div class="row children-mx-05">
+                <div class="flex-25">
+                    <p>Title: </p>
+                </div>
+                <div class="flex-1-0">
+                    <input type="text" cocktail-target="title" id="title-prop" placeholder="the title for your page" value="<%= @title %>">
+                </div>
+                <div class="flex-25">
+                    <button class="button button-small m-0" phx-click="page_settings" cocktail-ref="title-prop">Update</button>
+                </div>
+            </div>
+            <div class="row mt-1 children-mx-05">
+                <div class="flex-25">
+                    <p>Slug: </p>
+                </div>
+                <div class="flex-1-0">
+                    <input type="text" cocktail-target="slug" id="slug-prop" placeholder="the slug for your page" value="<%= @slug %>">
+                </div>
+                <div class="flex-25">
+                    <button class="button button-small m-0" phx-click="page_settings" cocktail-ref="slug-prop">Update</button>
+                </div>
+            </div>
+            <button class="button button-small mt-2" phx-click="toggle_page_options">Close</button>
+        </div>
+        <div id="cocktail-global-menu" class="cocktail-edit-menu <%= if(@show_global_options, do: "show") %>">
+            
+            <button class="button button-small" phx-click="toggle_global_options">Close</button>
+        </div>
+        <div id="cocktail-components-menu" class="cocktail-edit-menu <%= if(@show_components, do: "show") %>">
+            <%= for [id, title] <- @components do %>
+                <div class="flex-row children-align-items-center children-justify-content-center children-flex-column">
+                    <div class="flex-1-5">
+                        <p><%= title %></p>
+                    </div>
+                    <div class="flex-1-0">
+                        <button class="button button-small" phx-click="load_component" phx-value="<%= id %>">Import</button>
+                    </div>
+                </div>
+            <%= end %>
+            <br>
+            <br>
+            <button class="button button-small" phx-click="toggle_components">Close</button>
+        </div>
+    </div>
+</div>

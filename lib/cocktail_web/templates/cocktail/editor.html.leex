@@ -1,0 +1,26 @@
+<% import CocktailWeb.LayoutView, only: [build_classes_main: 2, build_styles: 1] %>
+
+<%= live_render(
+    @socket, Cocktail.View.Panel,
+    session: %{
+        selected: @selected,
+        show_edit_menu: @show_edit_menu,
+        show_global_options: @show_global_options,
+        show_page_options: @show_page_options,
+        show_components: @show_components,
+        page_id: @id,
+        title: @title,
+        slug: @slug,
+        saved: @saved,
+        created_at: @created_at,
+        type: @type,
+        components: @components,
+        protected: @protected
+    }
+) %>
+<div id="editor-main-body-container" class="<%= build_classes_main(@classes, @selected.title) %>" style="<%= build_styles(@style) %>" cocktail="1" cocktail-chain="[]" phx-click="select">
+    <%= for %{id: id} = contents <- @body do 
+        live_render(@socket, Cocktail.View.Element, session: %{contents: contents, chain: ["editor-main-body-container"], selected: @selected.id, page_id: @id}, child_id: id)
+    end %>
+</div>
+
