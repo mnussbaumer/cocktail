@@ -4,7 +4,7 @@ defmodule CocktailWeb.Endpoint do
   socket "/cocktail-editor/live", Phoenix.LiveView.Socket
 
   socket "/socket", CocktailWeb.UserSocket,
-    websocket: true,
+    websocket: [timeout: 45_000],
     longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.

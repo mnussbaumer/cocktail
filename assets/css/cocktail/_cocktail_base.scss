@@ -33,10 +33,6 @@ $color-map: (
     "clear": transparent,
 );
 
-
-@debug $sizes-map;
-
-
 .button {
     display: flex;
     justify-content: center;
@@ -138,10 +134,7 @@ $color-map: (
         .p-#{$i}, .children-p-#{$i} > * {
             padding: #{$val * 10}px;
         }
-        @debug $i;
-
     }
-    
 }
 
 .flex-row, .children-flex-row > * {
