@@ -38,8 +38,10 @@ defmodule CocktailWeb.CocktailController do
         |> put_view(CocktailWeb.CocktailPublicView)
         |> render("page.html")
 
-      {:error, :not_found} -> :ok
-      {:error, _} -> :ok      
+      _ ->
+        conn
+        |> put_view(CocktailWeb.ErrorView)
+        |> render("404.html")
     end
   end
 
@@ -50,12 +52,15 @@ defmodule CocktailWeb.CocktailController do
           assign(acc, k , v)
         end)
         |> assign(:additional, %{})
+        |> assign(:export_html, false)
         |> put_layout({CocktailWeb.LayoutView, "page.html"})
         |> put_view(CocktailWeb.CocktailPublicView)
         |> render("page.html")
 
-      {:error, :not_found} -> :ok
-      {:error, _} -> :ok      
+      _ ->
+        conn
+        |> put_view(CocktailWeb.ErrorView)
+        |> render("404.html")
     end
   end
 
@@ -77,7 +82,6 @@ defmodule CocktailWeb.CocktailController do
             |> Enum.into([])
 
         html = Phoenix.View.render_to_string(CocktailWeb.CocktailPublicView, "page.html", assigns)
-        IO.inspect(html, label: "html")
         text(conn, html)
       [_|_] = pages ->
         render(conn, "index.html", pages: pages)

@@ -13,6 +13,7 @@ defmodule CocktailWeb.CocktailPublicController do
           assign(acc, k, v)
         end)
         |> assign(:additional, %{})
+        |> assign(:export_html, false)
         |> put_layout({CocktailWeb.LayoutView, "page.html"})
         |> render("page.html")
 
