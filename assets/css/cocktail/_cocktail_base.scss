@@ -71,6 +71,7 @@ $color-map: (
         font-size: map-get($size-map, "font-size");
         line-height: map-get($size-map, "line-height");
         height: map-get($size-map, "btn-height");
+        min-height: map-get($size-map, "btn-height");
     }
 }
 
