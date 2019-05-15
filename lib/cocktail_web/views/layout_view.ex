@@ -320,7 +320,7 @@ defmodule CocktailWeb.LayoutView do
     tag(tag, add_attributes_list(el_id, chain, attrs, style, classes, selected == el_id))
   end
 
-  defmacro export_js(path) do
+  def export_js(path) do
     n_path = case path do
                "/" <> _ -> path
                _ -> "/" <> path
